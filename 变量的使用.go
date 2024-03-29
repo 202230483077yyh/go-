@@ -20,4 +20,13 @@ func main() {
 	c := 30
 	//Printf格式化输出并不会自动换行，Println一段段输出会自动换行
 	fmt.Printf("c type is %T\n", c)
+
+	// 不同类型变量的声明
+	var (
+		a1 int
+		b1 float64
+	)
+	a1, b1 = 10, 3.14
+	fmt.Println("a1=", a1, "b1=", b1)
+
 }

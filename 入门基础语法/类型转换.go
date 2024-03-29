@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 func main() {
 	var flag bool
@@ -9,11 +12,14 @@ func main() {
 	//bool类型不能转化为int!整型也不能转化为bool，不兼容
 	// fmt.Printf("flag=%d\n", int(flag))
 
-	//转化是显式的，不支持隐式
+	//go转化是显式的，不支持隐式
 	var ch byte
 	ch = 'a'
 	var t int
 	t = int(ch)
-	fmt.Println("t= ", t)
+	fmt.Println("t= \n", t)
 
+	var x, y int = 3, 4
+	var f float64 = math.Sqrt(float64(x*x + y*y))
+	fmt.Printf("f= %.2f\n", f)
 }

@@ -12,4 +12,21 @@ func main() {
 	}
 	fmt.Printf("num = %d\n", num)
 
+	//for可以不写初始化语句和条件改变语句,类似while
+	sum := 1
+	for sum < 1000 {
+		sum += sum
+	}
+	fmt.Println(sum)
+
+	//for什么都不写就是无限循环
+	tmp := 1
+	for {
+		if tmp >= 10 {
+			break
+		}
+		tmp = tmp + tmp
+	}
+	fmt.Printf("tmp = %d\n", tmp)
+
 }

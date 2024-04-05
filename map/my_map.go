@@ -17,4 +17,19 @@ func main() {
 	m2[1] = "mike"
 	fmt.Println(m2)
 	fmt.Println(len(m2))
+
+	m2[3] = "my"
+	//map遍历(无序)
+	for key, value := range m2 {
+		fmt.Printf("%d ---->%s\n", key, value)
+	}
+
+	//如何判断一个key是否存在
+	value, ok := m2[4]
+	if ok == true {
+		fmt.Println("m2[4]=", value)
+	} else {
+		fmt.Println("key不存在")
+	}
+
 }

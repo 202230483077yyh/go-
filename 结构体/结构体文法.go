@@ -7,9 +7,9 @@ type Vertex struct {
 }
 
 var (
-	v1 = Vertex{1, 2}  // 创建一个 Vertex 类型的结构体
-	v2 = Vertex{X: 1}  // Y:0 被隐式地赋予
-	v3 = Vertex{}      // X:0 Y:0
+	v1 = Vertex{1, 2}  //全部初始化
+	v2 = Vertex{X: 1}  // 指定部分初始化
+	v3 = Vertex{}      //全部默认初始化
 	p  = &Vertex{1, 2} // 创建一个 *Vertex 类型的结构体（指针）
 )
 

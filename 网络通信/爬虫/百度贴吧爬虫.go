@@ -17,7 +17,7 @@ func HttpGet(url string) (res string, err error) {
 	defer resp.Body.Close()
 
 	//读取网页内容
-	buf := make([]byte, 10224*4)
+	buf := make([]byte, 1024*4)
 
 	for {
 		n, err := resp.Body.Read(buf)

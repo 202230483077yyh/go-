@@ -91,7 +91,7 @@ func SpiderOneJoy(url string) (title, content string, err error) {
 		content += "\n"
 		content = strings.Replace(content, "\t", "", -1)
 		content = strings.Replace(content, " ", "", -1)
-		content = strings.Replace(content, "\r", "", -1)cleardata
+		content = strings.Replace(content, "\r", "", -1)
 	}
 
 	return

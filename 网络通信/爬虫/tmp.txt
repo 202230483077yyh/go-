@@ -1,27 +1,12 @@
-title =  求一个开心的笑话逗女朋友开心。
-content =  1.青蛙和袋鼠去嫖妓，
-袋鼠三两下就完事了，只听隔壁的青蛙，一整晚一直在：“1.2.3嘿、1.2.3.嘿“。
-袋鼠好羡慕，
-第二天一早，羡慕就问青蛙？
-青蛙说：”羡慕啥，老子一晚上都没有跳上床！“
-2.29岁的老处女与28岁的老处男终于结婚了。
-  老处女为了证明贞洁于是出上联：”一条河，两座山。29年没人观。“
-  老处男于是出下联：”一杆枪，两颗蛋。28年没抗战。“
-                  横批：“今夜火拼！”
-3.四只老鼠在一起吹牛。
-   一只说：”我把老鼠药，当糖吃。“
-  第二只说：”我一天，不踩老鼠夹。脚痒。“
-  第三只说：”我每天，不过两次街，心里不舒服。“
-  第四只：”时间不早了，该回家抱猫了。“
-4.蚂蚁和大象结婚后，不久，大象死了，蚂蚁伤心的哭着说：“你怎么那么快就去了，我这辈子啥事也不用做了，就安心埋你吧！‘
-5.长颈鹿与猴子结婚后，不久，长颈鹿提出离婚：“再也不能忍受这种上窜下跳的日子了！”猴子听后大怒道：“离就离！你看见谁，亲个嘴，还要上树的？”
-        哈哈，还有很多。。。。。。
-和老婆领证七年了，办准生证时居然说网上查不到我们的结婚证，显示和她结婚的是另一个陌生人，心里一阵激动，难道我一直在睡别人老婆。
-我4年级的时候嗓子不舒服，去看医生，医生说：没什么大不了，回去之后，多喝点水，少抽点烟，好好休息一就好了。 于是我就买了人生中第一包烟…
-好吃不过饺子，好玩不过婊子，好喝不过拿铁，好玩不过表姐
-给她一百块钱，让她看看钱上面是不是有天猫图标。
-<span class="diggit"><a href="JavaScript:makeRequest('https://www.pengfu.net/e/public/digg/?classid=8&id=15681&dotop=1&doajax=1&ajaxarea=diggnum','EchoReturnedText','GET','');"> 很赞哦！ </a>(<b id="diggnum"><script src=https://www.pengfu.net/e/public/ViewClick/?classid=8&id=15681&down=5></script></b>)</span>
-上一篇：<a href='<a href='https://www.pengfu.net/xiaohuashouye/15677.html'>让人笑到抽筋的幽默笑话</a>'>谈谈自媒体、新媒体和融媒体</a>
-下一篇：<a href='<a href='https://www.pengfu.net/xiaohuashouye/'>返回列表</a>'>返回列表</a>
-Copyright @ www.pengfu.net All Rights Reserved. 
-备案号：<a href="http://www.miitbeian.gov.cn/" target="_blank">蜀ICP备2023029990号-1</a>
+<div class="stepcont clearfix">
+                <a class="cboxElement cboxElement2" data-snum="2" rel="recipe_img" href="https://cp1.douguo.com/upload/caiku/a/3/b/yuan_a3b07071c81cc760692419e5b83b8dfb.jpeg" data-origin="https://cp1.douguo.com/upload/caiku/a/3/b/yuan_a3b07071c81cc760692419e5b83b8dfb.jpeg">
+                                            <img class="br8" src="https://cp1.douguo.com/upload/caiku/a/3/b/200_a3b07071c81cc760692419e5b83b8dfb.jpeg" alt="捞汁小海鲜的做法图解1" width="200" height="200" />
+                                    </a>
+                <div class="stepinfo">
+                    <p>步骤1</p>
+                    先把食材全部洗净，花蛤和蛏子放盐吐沙洗净、鲍鱼洗刷干净打花刀；
+                </div>
+            </div>
+
+
+<div class="stepcont clearfix">\s*<.*? href="(.*?)".*?>

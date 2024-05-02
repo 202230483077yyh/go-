@@ -1,16 +1,29 @@
 package main
 
 import (
+	"database/sql"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
+	"time"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
+type Dish struct {
+	name         string
+	operation    []string
+	picture_urls []string
+	tag          string
+}
+
 // 获取豆果网上的具体菜名的具体做法
-func get_content(url string) (content string, err error) {
+func get_content(url string) (name string, operation []string, err error) {
 	resp, err1 := http.Get(url)
 	if err1 != nil {
 		err = err1
@@ -21,10 +34,10 @@ func get_content(url string) (content string, err error) {
 
 	//读取网页内容
 	buf := make([]byte, 1024*4)
+	var content string
 	for {
-		n, err := resp.Body.Read(buf)
+		n, _ := resp.Body.Read(buf)
 		if n == 0 {
-			fmt.Println("resp.Body err = ", err)
 			break
 		}
 		content += string(buf[:n])
@@ -36,7 +49,11 @@ func get_content(url string) (content string, err error) {
 	}
 	//2.取关键信息
 	title := re.FindStringSubmatch(content)
-	fmt.Println(title[1])
+	if len(title) < 1 {
+		fmt.Println("错误的url", url)
+		return
+	}
+	name = title[1]
 
 	stepInfoRegex := regexp.MustCompile(`<div class="stepinfo">\s*<p>(.*?)</p>(?s:(.*?))</div>`)
 
@@ -46,9 +63,15 @@ func get_content(url string) (content string, err error) {
 	// 遍历匹配结果
 	for _, match := range matches {
 		// 输出步骤编号和描述
-		fmt.Println("步骤编号:", match[1])
-		fmt.Println("步骤描述:", match[2])
-		fmt.Println()
+		// fmt.Println("步骤编号:", match[1])
+		// fmt.Println("步骤描述:", match[2])
+
+		//调整格式
+		stmp := strings.Trim(match[2], "\t")
+		stmp = strings.Trim(stmp, " ")
+		stmp = strings.Trim(stmp, "\n")
+		stmp = strings.Trim(stmp, "\r")
+		operation = append(operation, stmp)
 	}
 	return
 }
@@ -67,9 +90,8 @@ func get_urls(url string) (urls []string, err error) {
 	//读取网页内容
 	buf := make([]byte, 1024*4)
 	for {
-		n, err := resp.Body.Read(buf)
+		n, _ := resp.Body.Read(buf)
 		if n == 0 {
-			fmt.Println("resp.Body err = ", err)
 			break
 		}
 		content += string(buf[:n])
@@ -124,9 +146,8 @@ func get_picture_url(url string) (urls []string, err error) {
 	//读取网页内容
 	buf := make([]byte, 1024*4)
 	for {
-		n, err := resp.Body.Read(buf)
+		n, _ := resp.Body.Read(buf)
 		if n == 0 {
-			fmt.Println("resp.Body err = ", err)
 			break
 		}
 		content += string(buf[:n])
@@ -140,9 +161,8 @@ func get_picture_url(url string) (urls []string, err error) {
 	return
 }
 
-func main() {
-	fmt.Println("正在爬取网页")
-	url := "https://www.douguo.com/cookbook/3196958.html"
+// 获取指定url的所有图片并保存到本地
+func download_pictures(url string) {
 	urls, err1 := get_picture_url(url)
 	if err1 != nil {
 		fmt.Println(err1)
@@ -161,8 +181,125 @@ func main() {
 		}(id, data)
 	}
 	for i := 0; i < len(urls); i++ {
-		tmp := <-str_chan
-		fmt.Println(tmp)
+		<-str_chan
+		//fmt.Println(tmp)
 	}
 	return
 }
+
+// 获取具体菜的封装类
+func get_class(url string) (res Dish, err error) {
+	res.name, res.operation, err = get_content(url)
+	if err != nil {
+		return
+	}
+	res.picture_urls, err = get_picture_url(url)
+	if err != nil {
+		return
+	}
+	return
+}
+
+func Print_Dish(res Dish) {
+	fmt.Println(res.name)
+	fmt.Println("具体步骤如下：")
+	for _, data := range res.operation {
+		fmt.Println(data)
+	}
+	fmt.Println("具体图片链接如下：")
+	for _, data := range res.picture_urls {
+		fmt.Println(data)
+	}
+	return
+}
+
+// 将类转化为项
+func to_db(res Dish, db *sql.DB) {
+	m1 := make(map[int]string, 1)
+	for id, data := range res.operation {
+		m1[id] = data
+	}
+
+	m2 := make(map[int]string, 1)
+	for id, data := range res.picture_urls {
+		m2[id] = data
+	}
+	m11, _ := json.MarshalIndent(m1, "", " ")
+	m21, _ := json.MarshalIndent(m2, "", " ")
+
+	_, err := db.Exec(`insert into dish(name,operation,picture_urls) values(?,?,?)`, res.name, m11, m21)
+	if err != nil {
+		fmt.Println("插入失败：", err)
+	}
+}
+
+func main() {
+	db, err := sql.Open("mysql", "root:123456@tcp(localhost:3306)/")
+	if err != nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+
+	// 创建新的数据库
+	_, err = db.Exec("CREATE DATABASE IF NOT EXISTS caipu")
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Println("Database created successfully.")
+
+	_, err = db.Exec(`use caipu`)
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Println("切换caipu数据库")
+
+	//往数据库里新建表
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS dish(name VARCHAR(255),operation json,picture_urls json)`)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	url0 := "https://www.douguo.com/caipu/海鲜"
+	urls, err0 := get_urls(url0)
+	if err0 != nil {
+		fmt.Println("获取菜系各个菜的url失败：", err0)
+		return
+	}
+
+	for _, url := range urls {
+		res, err := get_class(url)
+		if err != nil {
+			fmt.Println("err:", err)
+			return
+		}
+		// Print_Dish(res)
+		to_db(res, db)
+		time.Sleep(2 * time.Second)
+	}
+
+}
+
+// func main() {
+// 	url := "https://www.douguo.com/cookbook/2506854.html"
+// 	name, operation, err := get_content(url)
+// 	if err != nil {
+// 		fmt.Println("err", err)
+// 		return
+// 	}
+// 	fmt.Println(name)
+// 	fmt.Println(operation)
+// }
+
+// func main() {
+// 	url0 := "https://www.douguo.com/caipu/海鲜"
+// 	urls, err0 := get_urls(url0)
+// 	if err0 != nil {
+// 		fmt.Println("获取菜系各个菜的url失败：", err0)
+// 		return
+// 	}
+
+// 	for _, url := range urls {
+// 		fmt.Println(url)
+// 	}
+// 	return
+// }

@@ -214,7 +214,7 @@ func Print_Dish(res Dish) {
 }
 
 // 将类转化为项
-func to_db(res Dish, db *sql.DB) {
+func to_db(res Dish, db *sql.DB, tag string) {
 	m1 := make(map[int]string, 1)
 	for id, data := range res.operation {
 		m1[id] = data
@@ -227,7 +227,7 @@ func to_db(res Dish, db *sql.DB) {
 	m11, _ := json.MarshalIndent(m1, "", " ")
 	m21, _ := json.MarshalIndent(m2, "", " ")
 
-	_, err := db.Exec(`insert into dish(name,operation,picture_urls) values(?,?,?)`, res.name, m11, m21)
+	_, err := db.Exec(`insert into dish(name,operation,picture_urls,tag) values(?,?,?,?)`, res.name, m11, m21, tag)
 	if err != nil {
 		fmt.Println("插入失败：", err)
 	}
@@ -254,7 +254,7 @@ func main() {
 	fmt.Println("切换caipu数据库")
 
 	//往数据库里新建表
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS dish(name VARCHAR(255),operation json,picture_urls json)`)
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS dish(name VARCHAR(255),operation json,picture_urls json,tag VARCHAR(255))`)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -273,7 +273,7 @@ func main() {
 			return
 		}
 		// Print_Dish(res)
-		to_db(res, db)
+		to_db(res, db, "海鲜")
 		time.Sleep(2 * time.Second)
 	}
 

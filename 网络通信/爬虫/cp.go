@@ -17,13 +17,14 @@ import (
 
 type Dish struct {
 	name         string
+	cover        string
 	operation    []string
 	picture_urls []string
 	tag          string
 }
 
 // 获取豆果网上的具体菜名的具体做法
-func get_content(url string) (name string, operation []string, err error) {
+func get_content(url string) (name string, cover string, operation []string, err error) {
 	resp, err1 := http.Get(url)
 	if err1 != nil {
 		err = err1
@@ -42,6 +43,7 @@ func get_content(url string) (name string, operation []string, err error) {
 		}
 		content += string(buf[:n])
 	}
+
 	re := regexp.MustCompile(`<div class="step">\s*<h2.*?>(.*?)</h2>`)
 	if re == nil {
 		fmt.Println("regexp err")
@@ -49,11 +51,24 @@ func get_content(url string) (name string, operation []string, err error) {
 	}
 	//2.取关键信息
 	title := re.FindStringSubmatch(content)
+
 	if len(title) < 1 {
 		fmt.Println("错误的url", url)
 		return
 	}
 	name = title[1]
+
+	re_cover := regexp.MustCompile(`<div id="banner" class="cboxElement cboxElement1" data-origin="([^"]+)"`)
+	if re_cover == nil {
+		fmt.Println("regexp cover_err")
+		return
+	}
+	coverarr := re_cover.FindStringSubmatch(content)
+	if len(coverarr) < 1 {
+		fmt.Println("错误的cover", cover)
+		return
+	}
+	cover = coverarr[1]
 
 	stepInfoRegex := regexp.MustCompile(`<div class="stepinfo">\s*<p>(.*?)</p>(?s:(.*?))</div>`)
 
@@ -189,7 +204,7 @@ func download_pictures(url string) {
 
 // 获取具体菜的封装类
 func get_class(url string) (res Dish, err error) {
-	res.name, res.operation, err = get_content(url)
+	res.name, res.cover, res.operation, err = get_content(url)
 	if err != nil {
 		return
 	}
@@ -227,7 +242,7 @@ func to_db(res Dish, db *sql.DB, tag string) {
 	m11, _ := json.MarshalIndent(m1, "", " ")
 	m21, _ := json.MarshalIndent(m2, "", " ")
 
-	_, err := db.Exec(`insert into dish(name,operation,picture_urls,tag) values(?,?,?,?)`, res.name, m11, m21, tag)
+	_, err := db.Exec(`insert into dish(name,cover,operation,picture_urls,tag) values(?,?,?,?,?)`, res.name, res.cover, m11, m21, tag)
 	if err != nil {
 		fmt.Println("插入失败：", err)
 	}
@@ -254,12 +269,12 @@ func main() {
 	fmt.Println("切换caipu数据库")
 
 	//往数据库里新建表
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS dish(name VARCHAR(255),operation json,picture_urls json,tag VARCHAR(255))`)
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS dish(name VARCHAR(255),cover VARCHAR(1023),operation json,picture_urls json,tag VARCHAR(255))`)
 	if err != nil {
 		panic(err.Error())
 	}
 
-	url0 := "https://www.douguo.com/caipu/海鲜"
+	url0 := "https://www.douguo.com/caipu/清真菜"
 	urls, err0 := get_urls(url0)
 	if err0 != nil {
 		fmt.Println("获取菜系各个菜的url失败：", err0)
@@ -273,11 +288,50 @@ func main() {
 			return
 		}
 		// Print_Dish(res)
-		to_db(res, db, "海鲜")
+		to_db(res, db, "清真菜")
 		time.Sleep(2 * time.Second)
 	}
 
 }
+
+// func main() {
+// 	// resp, err1 := http.Get("https://www.douguo.com/cookbook/3300888.html")
+// 	// if err1 != nil {
+// 	// 	fmt.Println(err1)
+// 	// 	return
+// 	// }
+
+// 	// defer resp.Body.Close()
+
+// 	// //读取网页内容
+// 	// buf := make([]byte, 1024*4)
+// 	// var content string
+// 	// for {
+// 	// 	n, _ := resp.Body.Read(buf)
+// 	// 	if n == 0 {
+// 	// 		break
+// 	// 	}
+// 	// 	content += string(buf[:n])
+// 	// }
+// 	// // fmt.Println(content)
+// 	// f, err := os.Create("./tmp.txt")
+// 	// if err != nil {
+// 	// 	fmt.Println("err = ", err)
+// 	// 	return
+// 	// }
+// 	// defer f.Close()
+
+// 	// for i := 0; i < 10; i++ {
+// 	// 	_, err1 := f.WriteString(content)
+// 	// 	if err1 != nil {
+// 	// 		fmt.Println("err1 = ", err1)
+// 	// 		return
+// 	// 	}
+// 	// }
+
+// 	_, cover, _, _ := get_content("https://www.douguo.com/cookbook/3059720.html")
+// 	fmt.Println(cover)
+// }
 
 // func main() {
 // 	url := "https://www.douguo.com/cookbook/2506854.html"

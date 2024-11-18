@@ -18,10 +18,9 @@ func consumer(in <-chan int) {
 func main() {
 	ch := make(chan int)
 
-	//生产者，写入channel
-	go producer(ch) //channel传参，引用传递
-
 	//消费者，从channel读取内容打印
-	consumer(ch)
+	go consumer(ch)
 
+	//生产者，写入channel
+	producer(ch) //channel传参，引用传递
 }

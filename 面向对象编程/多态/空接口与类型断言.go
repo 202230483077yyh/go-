@@ -22,7 +22,7 @@ func main() {
 	tmp[2] = "yyh"
 
 	for id, val := range tmp {
-		//第一个返回的是值，，第二个返回的是判断结果的真假
+		//第一个返回的是值，第二个返回的是判断结果的真假
 		if value, ok := val.(int); ok == true {
 			fmt.Printf("tmp[%d] 类型为int ,内容为%d\n", id, value)
 		} else if value, ok := val.(string); ok == true {

@@ -13,6 +13,7 @@
 在每个文件夹下创建.go之后，再go mod init 包名，创建go.mod
 在go.mod中编辑：
 replace 导入的包名 => 路径/包名         严格注意空格！
+或者 go mod edit -replace example.com/greetings=../greetings
 
 在命令行：
 go mod tidy

@@ -11,7 +11,7 @@ func main() {
 	fmt.Printf("len(ch) = %d, cap(ch) = %d\n", len(ch), cap(ch))
 
 	go func() {
-		for i := 0; i < 3; i++ {
+		for i := 0; i <= 3; i++ {
 			ch <- i
 			fmt.Printf("子协程[%d]:len(ch) = %d, cap(ch) = %d\n", i, len(ch), cap(ch))
 		}
@@ -19,7 +19,7 @@ func main() {
 
 	time.Sleep(time.Second * 2)
 
-	for i := 0; i < 3; i++ {
+	for i := 0; i <= 3; i++ {
 		<-ch
 		fmt.Printf("主协程[%d]:len(ch) = %d, cap(ch) = %d\n", i, len(ch), cap(ch))
 
